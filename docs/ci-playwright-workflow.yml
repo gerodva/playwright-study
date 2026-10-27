@@ -1,0 +1,46 @@
+name: Playwright Tests & Security Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+# SEGURIDAD: Principio de menor privilegio.
+# El token de GitHub Actions solo tiene permiso de lectura del código fuente.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Descargar código fuente (Checkout)
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar entorno Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: 3. Instalar dependencias de forma determinista
+        run: npm ci
+
+      - name: 4. Auditoría de seguridad de dependencias (NPM Audit)
+        run: npm audit --audit-level=high
+
+      - name: 5. Instalar navegador Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: 6. Ejecutar todas las suites de Playwright
+        run: npx playwright test
+
+      - name: 7. Subir reporte HTML únicamente si algún test falla
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

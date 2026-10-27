@@ -1,0 +1,31 @@
+# ============================================================================
+# SEGURIDAD Y PRIVACIDAD - REPOSITORIO PÚBLICO
+# ============================================================================
+
+# 1. Variables de entorno y secretos (NUNCA subir credenciales reales)
+.env
+.env.*
+!.env.example
+
+# 2. Estados de sesión y autenticación de Playwright (contienen cookies/tokens/localStorage)
+/playwright/.auth/
+/playwright/.cache/
+auth.json
+storageState.json
+
+# 3. Reportes y trazas de ejecución (pueden contener capturas de pantalla, logs de red y headers)
+/test-results/
+/playwright-report/
+/blob-report/
+
+# 4. Dependencias de Node.js
+node_modules/
+
+# 5. Archivos temporales del sistema operativo y editores
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.vscode/*
+!.vscode/extensions.json
+.idea/
