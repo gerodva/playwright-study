@@ -7,9 +7,11 @@ on:
     branches: [ main, master ]
 
 # SEGURIDAD: Principio de menor privilegio.
-# El token de GitHub Actions solo tiene permiso de lectura del código fuente.
+# - contents: read (solo lectura del código)
+# - issues: write (permite al QA Guardian Bot abrir y cerrar Issues automáticamente)
 permissions:
   contents: read
+  issues: write
 
 jobs:
   test:
@@ -34,8 +36,11 @@ jobs:
       - name: 5. Instalar navegador Chromium para Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: 6. Ejecutar todas las suites de Playwright
-        run: npx playwright test
+      - name: 6. Ejecutar QA Guardian Bot (Auditoría + Playwright + Gestión de Issues)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: npm run bot:qa
 
       - name: 7. Subir reporte HTML únicamente si algún test falla
         uses: actions/upload-artifact@v4

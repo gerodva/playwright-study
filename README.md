@@ -24,6 +24,8 @@ El objetivo de este proyecto es servir como **manual vivo de referencia**: cada 
 
 ```text
 playwright-study/
+├── bot/
+│   └── qa-guardian-bot.ts     # Bot que audita tests, ejecuta Playwright y abre/cierra Issues
 ├── docs/
 │   ├── GUIA_DE_ESTUDIO.md         # Manual teórico-práctico de cada test y conceptos clave
 │   └── ci-playwright-workflow.yml # Plantilla lista de CI/CD para GitHub Actions con hardening
@@ -84,6 +86,30 @@ npm run test:ecommerce    # Suite 02: Catálogo, filtros, carrito y checkout
 npm run test:dom          # Suite 03: Manipulación del DOM y localStorage
 npm run test:network      # Suite 04: Intercepción de red y API Mocking
 npm run test:ui-avanzada  # Suite 05: Diálogos JS, cargas dinámicas y checkboxes
+```
+
+---
+
+## 🤖 QA Guardian Bot (Auditoría de Tests y Creación Automática de Issues)
+
+Este repositorio incluye un bot propio en [`bot/qa-guardian-bot.ts`](./bot/qa-guardian-bot.ts) que realiza **3 tareas automatizadas**:
+1. **Audita la calidad de los propios tests (`.spec.ts`)**: Detecta si alguien dejó un `test.only` olvidado, si usó el anti-patrón `waitForTimeout()` o si faltan bloques de documentación.
+2. **Ejecuta las 5 suites de Playwright** y analiza el reporte JSON estructurado.
+3. **Gestiona Issues en GitHub de forma segura**:
+   - **Sanitización de Seguridad**: Antes de crear un Issue público, oculta cualquier ruta local de tu PC (`<repo>`) y enmascara posibles tokens.
+   - **Apertura sin Spam**: Si un test falla, abre automáticamente un Issue con etiqueta `qa-bot` detallando línea, suite, error y comando para reproducirlo (`npx playwright test <archivo> --debug`). Si el Issue ya existe, no lo duplica.
+   - **Auto-Cierre (Self-Healing)**: Cuando corriges el problema y vuelves a correr el bot, detecta que todos los tests pasaron al 100%, comenta la resolución y **cierra el Issue automáticamente**.
+
+### Comandos del Bot
+```bash
+# Ejecutar auditoría + tests reales y sincronizar con GitHub Issues
+npm run bot:qa
+
+# Probar el bot en modo vista previa (sin publicar en GitHub)
+npm run bot:dry-run
+
+# Simular un fallo controlado para ver cómo el bot abre un Issue real en GitHub
+npm run bot:simulate-fail
 ```
 
 ---

@@ -16,6 +16,9 @@
     "test:network": "playwright test tests/04-red-y-api-mocking.spec.ts",
     "test:ui-avanzada": "playwright test tests/05-ui-avanzada.spec.ts",
     "test:report": "playwright show-report",
+    "bot:qa": "node bot/qa-guardian-bot.ts",
+    "bot:dry-run": "node bot/qa-guardian-bot.ts --dry-run",
+    "bot:simulate-fail": "node bot/qa-guardian-bot.ts --simulate-failure",
     "security:audit": "npm audit --audit-level=high"
   },
   "devDependencies": {
